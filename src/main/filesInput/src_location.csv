@@ -1,0 +1,5 @@
+id,file_path,temp_view_alias
+1,s3a://com-elsevier-usage-dataset-sit/in/technical/harvested/security/vulnerabilities/yyyy/mmdd,metric_value
+2,s3a://com-elsevier-usage-dataset-sit/out/metrics/technical/divisions/division.parquet,division
+3,s3a://com-elsevier-usage-dataset-sit/out/metrics/technical/locations/src_location.parquet,location
+4,s3a://com-elsevier-usage-dataset-sit/out/metrics/technical/metric_definitions/metric_definitions.parquet,metric_definition
