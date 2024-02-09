@@ -2,6 +2,11 @@
 *.log
 .DS_Store
 
+data/
+lib/
+config/
+cache/
+
 # sbt specific
 .cache
 .history
@@ -15,14 +20,8 @@ project/project/*
 project/boot/*
 project/plugins/project/*
 
-#Project specific
-scripts/*
-config/*
-data/*
-
 # Scala-IDE specific
 .scala_dependencies
 .worksheet
 .idea/
 *.iml
-

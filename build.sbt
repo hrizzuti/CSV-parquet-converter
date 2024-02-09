@@ -15,3 +15,5 @@ libraryDependencies += "org.apache.hadoop" % "hadoop-aws" % hadoopVersion
 
 libraryDependencies += "org.apache.spark" %% "spark-core" % "3.0.1"
 libraryDependencies += "org.apache.spark" %% "spark-sql" % "3.0.1"
+libraryDependencies += "org.postgresql" % "postgresql" % "9.4-1200-jdbc41"
+libraryDependencies += "com.oracle.database.jdbc" % "ojdbc8" % "12.2.0.1"

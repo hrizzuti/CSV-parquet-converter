@@ -1,23 +1,33 @@
-import org.apache.spark.sql.{SaveMode, SparkSession}
+import com.amazonaws.auth.AWSSessionCredentials
+import com.amazonaws.auth.profile.ProfileCredentialsProvider
+import org.apache.spark.SparkConf
+import org.apache.spark.sql.types.{StringType, StructField, StructType}
+import org.apache.spark.sql.{Encoders, SaveMode, SparkSession}
 
 object ConvertToCSV extends App {
 
+  val credentials = new ProfileCredentialsProvider("epicnonprod").getCredentials
 
-  val spark: SparkSession = SparkSession.builder()
-    .master("local[1]")
-    .appName("Converter")
-    .getOrCreate()
+  sparkSession.sparkContext.hadoopConfiguration.set("fs.s3a.access.key", credentials.getAWSAccessKeyId)
+  sparkSession.sparkContext.hadoopConfiguration.set("fs.s3a.secret.key", credentials.getAWSSecretKey)
+  sparkSession.sparkContext.hadoopConfiguration.set("fs.s3a.session.token", credentials.asInstanceOf[AWSSessionCredentials].getSessionToken)
+  sparkSession.sparkContext.hadoopConfiguration.set("fs.s3a.multiobjectdelete.enable", "false")
+  sparkSession.sparkContext.hadoopConfiguration.set("fs.s3a.aws.credentials.provider", "org.apache.hadoop.fs.s3a.TemporaryAWSCredentialsProvider")
 
-  val filename = "part-00000-b7ab4984-4757-480a-81f9-a2b98bf645bf-c000.snappy"
+  val spark = sparkSession()
 
-  val df = spark.read
-    .format("parquet")
-    .load(s"src/main/filesInput/$filename.parquet")
+  //val filename = "sd_fact_journal_article-2023-01-0000_part_00.parquet"
 
-  df.write
-    .mode(SaveMode.Append)
-    .option("mapreduce.fileoutputcommitter.marksuccessfuljobs", "false")
-    .option("header", "true")
-    .csv("src/main/filesOutput/")
+  val a = spark.read.parquet("s3a://epic-backend-dataset-nonprod/warehouse/weekly_dataset/import_audit/*/part-*")
 
+  spark.close()
+
+  def sparkSession(): SparkSession = {
+    val sparkSession: SparkSession = SparkSession.builder
+      .appName("Converter")
+      .config(new SparkConf().setMaster("local[4]").set("spark.driver.host", "localhost"))
+      .getOrCreate()
+
+    sparkSession
+  }
 }
